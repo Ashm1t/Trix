@@ -20,7 +20,7 @@ A Python-based AI assistant that channels the iconic personality of GLaDOS from 
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/Trix.git
+git clone https://github.com/Ashm1t/Trix.git
 cd Trix
 ```
 
@@ -31,8 +31,12 @@ pip install -r requirements.txt
 ```
 
 3. Set up your Groq API key:
-   - Open `backend/llm_handler.py`
-   - Replace the `GROQ_API_KEY` value with your actual API key
+   - Create a `.env` file in the project root directory
+   - Add your Groq API key to the file:
+     ```
+     GROQ_API_KEY=your_actual_groq_api_key_here
+     ```
+   - Replace `your_actual_groq_api_key_here` with your actual Groq API key
 
 ## Usage
 
@@ -58,6 +62,7 @@ Trix/
 │   ├── trix_cli.py         # CLI interface
 │   └── requirements.txt     # Python dependencies
 ├── frontend/               # Reserved for future web interface
+├── .env                    # API key configuration (create this file)
 └── README.md
 ```
 
@@ -77,6 +82,10 @@ The following Groq models are supported:
 - llama-3.1-8b-instant (Fast Llama 3.1 8B model)
 - llama3-8b-8192 (Default Llama 3 8B model)
 - gemma2-9b-it (Gemma 2 9B model)
+
+## Security Note
+
+⚠️ **Important**: Never commit your `.env` file or share your API key. The `.env` file is included in `.gitignore` to prevent accidental exposure of sensitive information.
 
 ## Contributing
 

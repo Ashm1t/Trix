@@ -2,12 +2,60 @@ import httpx
 import os
 from rich.console import Console
 from personality_config import glados_personality
-
-# Direct API key - replace with your actual key
-GROQ_API_KEY = "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"
-GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
+from pathlib import Path
 
 console = Console()
+
+# First check if API key is already in environment (from launcher script)
+GROQ_API_KEY = os.getenv('GROQ_API_KEY')
+
+# Only try to load from .env file if API key not already set
+if not GROQ_API_KEY:
+    try:
+        from dotenv import load_dotenv
+        
+        # Try to load from .env file in different possible locations
+        env_paths = [
+            Path('.') / '.env',
+            Path('..') / '.env',
+            Path(__file__).parent / '.env',
+            Path(__file__).parent.parent / '.env'
+        ]
+
+        env_loaded = False
+        for env_path in env_paths:
+            if env_path.exists():
+                try:
+                    load_dotenv(env_path)
+                    env_loaded = True
+                    break
+                except UnicodeDecodeError:
+                    # Skip corrupted .env files
+                    continue
+        
+        # Try to get API key again after loading .env
+        GROQ_API_KEY = os.getenv('GROQ_API_KEY')
+        
+    except ImportError:
+        # python-dotenv not installed, skip .env loading
+        pass
+
+# Final check for API key
+if not GROQ_API_KEY:
+    error_message = """
+    ERROR: GROQ_API_KEY not found in environment variables.
+    
+    Please either:
+    1. Use the launcher scripts (launch_glados.py or launch_glados.bat)
+    2. Or create a .env file in the project root directory with UTF-8 encoding:
+       GROQ_API_KEY=your_actual_groq_api_key_here
+    3. Or set the environment variable manually:
+       Windows: set GROQ_API_KEY=your_key
+       PowerShell: $env:GROQ_API_KEY="your_key"
+    """
+    raise ValueError(error_message)
+
+GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 
 # Model configurations with correct Groq model names
 MODEL_CONFIGS = {
